@@ -16,15 +16,16 @@ class ProfilesPlugin implements Plugin<Project>{
         project.extensions.profiledFiles = files
         project.tasks.create("listProfiles", ListProfiles)
         project.tasks.create("listProfiledFiles", ListProfiledFiles)
-        project.tasks.create("applyConfigurationProfile", ApplyConfigurationProfile)
+        def applyConfigurationProfile = project.tasks.create("applyConfigurationProfile", ApplyConfigurationProfile)
         project.tasks.addRule("Pattern: showProfile<ConfigurationProfileName>: Show all replacements for given profile") { String taskName ->
             if(taskName.startsWith('showProfile')) {
                 String profileName = taskName - 'showProfile'
-                Profile p = project.extensions.profiles."${profileName}"
-                project.task([type: ShowProfile], "showProfile${p.name.capitalize()}") {
+                Profile p = profiles."${profileName[0].toLowerCase() + profileName.substring(1)}"
+                project.task([type: ShowProfile], taskName) {
                     profile = p
                 }
             }
         }
+        project.afterEvaluate { applyConfigurationProfile.configureDependencies() }
     }
 }

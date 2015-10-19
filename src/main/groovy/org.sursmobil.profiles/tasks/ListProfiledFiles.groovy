@@ -14,8 +14,9 @@ class ListProfiledFiles extends ProfilesPluginTask {
 
     @TaskAction
     void print() {
+        println "Profiled files in $project"
         project.extensions.profiledFiles.files.each {
-            println it.path
+            println " - $it.path"
         }
     }
 }

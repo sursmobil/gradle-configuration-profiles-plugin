@@ -32,6 +32,13 @@ profiles {
     }
 }
 
+task copyConfig(type: Copy) {
+    into "$buildDir/tmp"
+    from "config"
+}
+
 profiledFiles {
-    file "$projectDir/config/config"
+    file "$buildDir/tmp/config", {
+        builtBy copyConfig
+    }
 }

@@ -1,6 +1,7 @@
 package org.sursmobil.profiles
 
 import org.gradle.api.Project
+import org.gradle.api.Task
 
 /**
  * Created by CJ on 19/10/2015.
@@ -18,9 +19,11 @@ class ProfiledFiles {
     }
 
     void file(String path, Closure configure) {
-        def file = new ProfiledFile(path)
-        configure(file)
-        files << file
+        def f = new ProfiledFile(path)
+        configure.delegate = f
+        configure.resolveStrategy = Closure.DELEGATE_FIRST
+        configure.call(f)
+        files << f
     }
 
     class ProfiledFile {
@@ -28,6 +31,10 @@ class ProfiledFiles {
             this.path = path
         }
         final path
-        String destDir = "${project.buildDir}"
+        Task builtBy
+
+        void builtBy(Task task) {
+            builtBy = task
+        }
     }
 }

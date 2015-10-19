@@ -13,6 +13,14 @@ class ApplyConfigurationProfile extends ProfilesPluginTask {
         description = "Apply configuration profile to all profiled files."
     }
 
+    void configureDependencies() {
+        project.extensions.profiledFiles.files.each {
+            if(it.builtBy) {
+                dependsOn += it.builtBy
+            }
+        }
+    }
+
     @TaskAction
     void applyProfile() {
         Profile p
@@ -29,8 +37,7 @@ class ApplyConfigurationProfile extends ProfilesPluginTask {
             p.variables.each {k, v ->
                 text = text.replaceAll("%$k%", "$v")
             }
-            project.file("${it.destDir}").mkdirs()
-            project.file("${it.destDir}/${file.name}").text = text
+            file.text = text
         }
     }
 }

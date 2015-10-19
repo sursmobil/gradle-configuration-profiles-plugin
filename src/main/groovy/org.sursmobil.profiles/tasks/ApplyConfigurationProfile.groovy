@@ -7,7 +7,11 @@ import org.sursmobil.profiles.Profile
 /**
  * Created by CJ on 19/10/2015.
  */
-class ApplyConfigurationProfile extends DefaultTask{
+class ApplyConfigurationProfile extends ProfilesPluginTask {
+
+    ApplyConfigurationProfile() {
+        description = "Apply configuration profile to all profiled files."
+    }
 
     @TaskAction
     void applyProfile() {

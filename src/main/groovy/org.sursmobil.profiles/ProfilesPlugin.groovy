@@ -17,14 +17,14 @@ class ProfilesPlugin implements Plugin<Project>{
         project.tasks.create("listProfiles", ListProfiles)
         project.tasks.create("listProfiledFiles", ListProfiledFiles)
         project.tasks.create("applyConfigurationProfile", ApplyConfigurationProfile)
-        project.afterEvaluate addDescribeProfileTasks(project)
-    }
-
-    static Closure addDescribeProfileTasks(Project project) { return {
-        project.extensions.profiles.each { Profile p ->
-            project.task([type: ShowProfile], "showProfile${p.name.capitalize()}") {
-                profile = p
+        project.tasks.addRule("Pattern: showProfile<ConfigurationProfileName>: Show all replacements for given profile") { String taskName ->
+            if(taskName.startsWith('showProfile')) {
+                String profileName = taskName - 'showProfile'
+                Profile p = project.extensions.profiles."${profileName}"
+                project.task([type: ShowProfile], "showProfile${p.name.capitalize()}") {
+                    profile = p
+                }
             }
         }
-    } }
+    }
 }
